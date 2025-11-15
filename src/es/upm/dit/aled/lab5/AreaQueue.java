@@ -21,17 +21,24 @@ public class AreaQueue extends Area {
 	
     @Override
 	public synchronized void enter(Patient p) {
-		while(numPatients>=capacity) {
-			waiting++;
+    	waitQueue.add(p);
+        waiting++;
+		while(numPatients>=capacity|| waitQueue.peek() != p) {
 			try {
                 wait();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+            	Thread.currentThread().interrupt();
+                // remove patient from queue and decrement waiting if interrupted
+            	 waitQueue.remove(p);
+                 waiting--;
+                 return;
             }
-            waiting--;
-		
 		}
-		numPatients++;
+		
+			waitQueue.remove(); // should be 'patient'
+	        waiting--;    // no longer waiting
+	        numPatients++; // being attended now
+     
 		
 	}
 	

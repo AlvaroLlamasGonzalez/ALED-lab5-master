@@ -165,7 +165,20 @@ public class Patient extends Thread {
 	@Override
 	public void run() {
 		// TODO
-		while (indexProtocol < protocol.size()) {
+		// SOLUCION
+				this.location.enter(this);
+				attendedAtLocation();
+				this.location.exit(this);
+				while (indexProtocol < protocol.size()) {
+					advanceProtocol();
+					this.location.enter(this);
+					attendedAtLocation();
+					this.location.exit(this);
+				}
+				EmergencyRoomGUI.getInstance().removePatient(this);
+				System.out.println("Patient " + this.number + " protocol finished at " + this.location);
+				// SOLUCION
+	/*	while (indexProtocol < protocol.size()) {
 			location.enter(this);
 			this.attendedAtLocation();
 			location.exit(this);
@@ -173,6 +186,7 @@ public class Patient extends Thread {
 		}
 		EmergencyRoomGUI.getInstance().removePatient(this);
 		System.out.println("Patient " + this.number + " protocol finished at " + this.location);
+	*/
 	}
 	}
 

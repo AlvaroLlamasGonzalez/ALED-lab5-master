@@ -21,7 +21,7 @@ public class AreaQueue extends Area {
 	
     @Override
 	public synchronized void enter(Patient p) {
-    	waitQueue.add(p);
+    	/*waitQueue.add(p);
         waiting++;
 		while(numPatients>=capacity|| waitQueue.peek() != p) {
 			try {
@@ -39,7 +39,25 @@ public class AreaQueue extends Area {
 	        waiting--;    // no longer waiting
 	        numPatients++; // being attended now
      
-		
+	*/
+    	System.out.println("Patient " + p.getNumber() + " trying to enter " + this.getName());
+		this.waiting++;
+		this.waitQueue.add(p); // Add to the end of the queue
+		try {
+			while (numPatients >= capacity || this.waitQueue.peek() != p) {
+				System.out.println("Patient " + p.getNumber() + " waiting for " + this.getName()
+						+ ". Front of the queue?: " + this.waitQueue.peek().equals(p));
+				wait();
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			Thread.currentThread().interrupt(); // Restore interrupted status
+		}
+		this.waitQueue.remove(); // Dequeue from the front
+		this.numPatients++;
+		this.waiting--;
+		System.out.println("Patient " + p.getNumber() + " has entered " + this.name);
+	
 	}
 	
 	// TODO
